@@ -4,6 +4,8 @@ import type { AppRole, InvitationStatus, MembershipStatus } from "@/lib/auth/per
 import type { ComplianceControlStatus } from "@/lib/validations/compliance";
 import type { BaaStatus } from "@/lib/validations/baa";
 import type { BackupRecordStatus } from "@/lib/validations/backup";
+import type { DataClassificationLevel } from "@/lib/validations/classifications";
+import type { EhrProvider, IntegrationMode, IntegrationStatus } from "@/lib/validations/integrations";
 import type { IncidentSeverity, IncidentStatus } from "@/lib/validations/incidents";
 import type { SecurityPolicyStatus } from "@/lib/validations/policies";
 import type { RiskAssessmentStatus } from "@/lib/validations/risks";
@@ -117,6 +119,51 @@ export type BackupRecord = {
   last_success_at: string | null;
   next_scheduled_at: string | null;
   retention_days: number;
+  notes: string | null;
+};
+
+export type EhrIntegration = {
+  id: string;
+  organization_id: string;
+  provider: EhrProvider;
+  mode: IntegrationMode;
+  status: IntegrationStatus;
+  external_tenant_id: string | null;
+  sync_frequency_minutes: number;
+  last_sync_at: string | null;
+  notes: string | null;
+};
+
+export type IntegrationSyncRunStatus = "accepted" | "processing" | "succeeded" | "failed";
+export type IntegrationSyncTrigger = "manual" | "scheduled" | "retry";
+
+export type IntegrationSyncRun = {
+  id: string;
+  organization_id: string;
+  integration_id: string;
+  request_id: string;
+  provider: EhrProvider;
+  trigger: IntegrationSyncTrigger;
+  run_status: IntegrationSyncRunStatus;
+  dry_run: boolean;
+  requested_at: string;
+  accepted_at: string;
+  source_identifier: string | null;
+  telemetry: Record<string, unknown>;
+  error_message: string | null;
+  completed_at: string | null;
+};
+
+export type DataClassification = {
+  id: string;
+  organization_id: string;
+  asset_name: string;
+  data_type: string;
+  classification_level: DataClassificationLevel;
+  contains_phi: boolean;
+  contains_pii: boolean;
+  encryption_required: boolean;
+  retention_days: number | null;
   notes: string | null;
 };
 

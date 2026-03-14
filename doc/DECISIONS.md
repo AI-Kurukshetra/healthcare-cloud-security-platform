@@ -21,3 +21,11 @@
   Rationale: CSV can be shipped quickly on top of existing schema, supports audit prep workflows immediately, and avoids introducing extra rendering/storage complexity in MVP.
 - Model policy management as a versioned `security_policies` register instead of single mutable organization policy fields.
   Rationale: Version history and review cycles are core to audit readiness, and this structure aligns with existing compliance/risk panel patterns.
+- Model the first integration path as an `ehr_integrations` metadata registry (provider/mode/status/sync cadence) instead of direct EHR data ingestion.
+  Rationale: This de-risks initial delivery, supports operational visibility, and creates a secure stepping stone for future API sync endpoints.
+- Implement initial integration sync security with a static token and in-memory rate limiter.
+  Rationale: It provides immediate protection for the first API surface while keeping implementation lightweight; can be replaced by secret rotation and distributed rate limiting in a later phase.
+- Model data-classification as an asset-centric register (`data_classifications`) with explicit PHI/PII and encryption flags.
+  Rationale: This creates an actionable baseline for handling controls and reporting without requiring complex lineage tooling in the first release.
+- Model EHR monitoring as a dedicated `integration_sync_runs` telemetry table keyed by `request_id` instead of relying only on generic audit events.
+  Rationale: Structured run records support dashboard monitoring and future sync lifecycle updates while audit logs remain the immutable sensitive-action trail.

@@ -26,4 +26,10 @@
 - [x] 2026-03-14 16:28 Add secret-gated backup E2E job to GitHub Actions CI workflow
 - [x] 2026-03-14 16:50 Add first EHR integration path (schema + actions + dashboard panel + validations)
 - [x] 2026-03-14 16:55 Add secure EHR sync API endpoint with token auth, rate-limiting stub, and request validation
+- [x] 2026-03-14 16:58 Document EHR sync API usage in README with env vars and curl example
+- [x] 2026-03-14 17:03 Add data classification baseline workflow (schema + actions + dashboard panel + validations)
 - [x] 2026-03-14 17:05 Harden CI by running full secret-gated E2E suite matrix (invite/risk/baa/training/backup) with per-suite status summaries
+- [x] 2026-03-14 17:15 Add EHR sync monitoring telemetry (schema + API persistence + dashboard run visibility + validation updates)
+- [x] 2026-03-14 17:36 Fix password-reset recovery flow (auth confirm callback + update-password UI/action + validation tests)
+- [x] 2026-03-14 17:50 Fix pending-invitation resend/revoke access by granting compliance-manager invite permission
+- [x] 2026-03-14 18:04 Fix member role updates by enabling compliance-manager role management and hardening role-update action errors

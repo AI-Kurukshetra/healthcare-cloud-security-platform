@@ -21,7 +21,15 @@ export type Permission = (typeof permissions)[number];
 
 const rolePermissions: Record<AppRole, readonly Permission[]> = {
   org_admin: permissions,
-  compliance_manager: ["view_audit_logs", "manage_compliance", "manage_incidents", "view_reports", "view_team_roster"],
+  compliance_manager: [
+    "invite_users",
+    "manage_roles",
+    "view_audit_logs",
+    "manage_compliance",
+    "manage_incidents",
+    "view_reports",
+    "view_team_roster",
+  ],
   staff: [],
 };
 

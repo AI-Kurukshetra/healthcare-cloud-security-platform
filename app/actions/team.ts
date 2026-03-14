@@ -505,12 +505,19 @@ export async function updateMemberRole(_: FormState, formData: FormData): Promis
   }
 
   const admin = createAdminClient();
-  const { data: membership } = await admin
+  const { data: membership, error: membershipLookupError } = await admin
     .from("organization_memberships")
-    .select("id, user_id")
+    .select("id, user_id, role")
     .eq("id", parsed.data.membershipId)
     .eq("organization_id", context.organization.id)
-    .maybeSingle<{ id: string; user_id: string }>();
+    .maybeSingle<{ id: string; user_id: string; role: "org_admin" | "compliance_manager" | "staff" }>();
+
+  if (membershipLookupError) {
+    return {
+      status: "error",
+      message: membershipLookupError.message,
+    };
+  }
 
   if (!membership) {
     return {
@@ -526,7 +533,25 @@ export async function updateMemberRole(_: FormState, formData: FormData): Promis
     };
   }
 
-  await admin.from("organization_memberships").update({ role: parsed.data.role }).eq("id", membership.id);
+  if (membership.role === parsed.data.role) {
+    return {
+      status: "success",
+      message: "Role is already set to the selected value.",
+    };
+  }
+
+  const { error: updateError } = await admin
+    .from("organization_memberships")
+    .update({ role: parsed.data.role })
+    .eq("id", membership.id)
+    .eq("organization_id", context.organization.id);
+
+  if (updateError) {
+    return {
+      status: "error",
+      message: updateError.message,
+    };
+  }
 
   await logAuditEvent({
     organizationId: context.organization.id,

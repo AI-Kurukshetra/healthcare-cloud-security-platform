@@ -7,11 +7,11 @@ describe("permissions", () => {
     expect(can("org_admin", "view_audit_logs")).toBe(true);
   });
 
-  it("restricts compliance managers from role and org management", () => {
+  it("allows compliance managers to manage invitations and roles", () => {
     expect(can("compliance_manager", "manage_compliance")).toBe(true);
     expect(can("compliance_manager", "view_team_roster")).toBe(true);
-    expect(can("compliance_manager", "manage_roles")).toBe(false);
-    expect(can("compliance_manager", "invite_users")).toBe(false);
+    expect(can("compliance_manager", "manage_roles")).toBe(true);
+    expect(can("compliance_manager", "invite_users")).toBe(true);
   });
 
   it("keeps staff on the minimal access path", () => {

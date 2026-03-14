@@ -58,4 +58,20 @@
 - Added in-memory rate limiting utility (`lib/api/rate-limit.ts`) used by integration sync API as a stub for future distributed backends.
 - Added unit tests for integration sync payload validation and API rate-limit behavior.
 - Extended env scaffolding with `INTEGRATION_SYNC_TOKEN` and `INTEGRATION_SYNC_RATE_LIMIT_PER_MINUTE`.
+- Updated README with an EHR sync API quickstart section covering required env vars, auth header, and sample curl request.
+- Added migration `20260314170005_data_classifications.sql` with `data_classification_level` enum and `data_classifications` table, indexes, update trigger, and privileged-role RLS policies.
+- Added classification validation module (`lib/validations/classifications.ts`) and tests for create/update payload rules.
+- Added classification server actions (`app/actions/classifications.ts`) for creating records and updating classification level/encryption requirement with audit events (`classification.created`, `classification.level_updated`).
+- Added dashboard data classification UI (`components/dashboard/data-classification-panel.tsx`) and dashboard data wiring to manage asset sensitivity baselines.
 - Refactored CI E2E into a secret-gated `e2e-matrix` workflow job that runs `invite`, `risk`, `baa`, `training`, and `backup` suites with `fail-fast: false` and per-suite step-summary status reporting.
+- Added migration `20260314171500_integration_sync_runs.sql` with sync-run status/trigger enums and `integration_sync_runs` telemetry table, indexes, update trigger, and privileged-role RLS policies.
+- Extended `POST /api/integrations/ehr/sync` to persist accepted sync requests into telemetry records keyed by `request_id`.
+- Enhanced dashboard EHR integrations panel with recent sync monitoring KPIs and a telemetry table showing request timing, status, trigger, and connector metadata.
+- Extended integration sync validation schema/tests to support optional telemetry payload fields (expected record count, source watermark, connector version).
+- Fixed password-reset flow by changing reset email redirect target to `/auth/confirm?next=/update-password` and adding callback session exchange route `app/auth/confirm/route.ts`.
+- Added update-password UI/action (`app/(auth)/update-password/page.tsx`, `components/auth/update-password-form.tsx`, `updatePassword` server action) with recovery-session checks and audit logging.
+- Added `updatePasswordSchema` in auth validations and focused unit coverage in `lib/validations/auth.test.ts`.
+- Updated RBAC permissions so `compliance_manager` can perform invitation lifecycle actions (`invite_users`), enabling resend/revoke on pending invitations.
+- Updated permission unit tests in `lib/auth/permissions.test.ts` to reflect invitation access for compliance managers while keeping role-management restricted.
+- Updated RBAC permissions so `compliance_manager` can also manage team roles (`manage_roles`) for dashboard role updates.
+- Hardened `updateMemberRole` action in `app/actions/team.ts` with explicit membership lookup/update error handling and no-op messaging when selected role already matches.

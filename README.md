@@ -44,3 +44,36 @@ Required repository secrets for invite E2E:
 Optional invite E2E secrets:
 - `E2E_ORG_SLUG`
 - `E2E_ORG_NAME`
+
+## EHR Sync API
+Secure integration endpoint:
+- `POST /api/integrations/ehr/sync`
+
+Required environment variables:
+- `INTEGRATION_SYNC_TOKEN`
+- Optional: `INTEGRATION_SYNC_RATE_LIMIT_PER_MINUTE` (default: `20`)
+
+Required request header:
+- `x-integration-token: <INTEGRATION_SYNC_TOKEN>`
+
+Example request:
+```bash
+curl -X POST "http://127.0.0.1:3000/api/integrations/ehr/sync" \
+  -H "Content-Type: application/json" \
+  -H "x-integration-token: $INTEGRATION_SYNC_TOKEN" \
+  -d '{
+    "organizationSlug": "e2e-security-ops",
+    "provider": "athenahealth",
+    "trigger": "manual",
+    "dryRun": true,
+    "telemetry": {
+      "expectedRecords": 120,
+      "sourceUpdatedAfter": "2026-03-14T09:45:00.000Z",
+      "connectorVersion": "1.2.0"
+    }
+  }'
+```
+
+Notes:
+- Optional telemetry fields are persisted to `integration_sync_runs` for dashboard monitoring.
+- API responses include `requestId`, which is the tracking key for each sync request.

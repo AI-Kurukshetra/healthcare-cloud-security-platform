@@ -12,6 +12,8 @@ import { TrainingRecordsPanel } from "@/components/dashboard/training-records-pa
 import { BaaPanel } from "@/components/dashboard/baa-panel";
 import { BackupRecordsPanel } from "@/components/dashboard/backup-records-panel";
 import { SecurityPolicyPanel } from "@/components/dashboard/security-policy-panel";
+import { EhrIntegrationPanel } from "@/components/dashboard/ehr-integration-panel";
+import { DataClassificationPanel } from "@/components/dashboard/data-classification-panel";
 import { getCurrentUserContext } from "@/lib/auth/context";
 import { can } from "@/lib/auth/permissions";
 import type {
@@ -19,6 +21,9 @@ import type {
   BackupRecord,
   BusinessAssociateAgreement,
   ComplianceControl,
+  DataClassification,
+  EhrIntegration,
+  IntegrationSyncRun,
   IncidentReport,
   RiskAssessment,
   SecurityPolicy,
@@ -150,6 +155,37 @@ export default async function DashboardPage() {
         .returns<BackupRecord[]>()
     : { data: [] };
 
+  const { data: integrations } = canManageCompliance
+    ? await supabase
+        .from("ehr_integrations")
+        .select("id, organization_id, provider, mode, status, external_tenant_id, sync_frequency_minutes, last_sync_at, notes")
+        .eq("organization_id", organizationId)
+        .order("provider", { ascending: true })
+        .returns<EhrIntegration[]>()
+    : { data: [] };
+
+  const { data: classifications } = canManageCompliance
+    ? await supabase
+        .from("data_classifications")
+        .select("id, organization_id, asset_name, data_type, classification_level, contains_phi, contains_pii, encryption_required, retention_days, notes")
+        .eq("organization_id", organizationId)
+        .order("classification_level", { ascending: false })
+        .order("created_at", { ascending: false })
+        .returns<DataClassification[]>()
+    : { data: [] };
+
+  const { data: integrationSyncRuns } = canManageCompliance
+    ? await supabase
+        .from("integration_sync_runs")
+        .select(
+          "id, organization_id, integration_id, request_id, provider, trigger, run_status, dry_run, requested_at, accepted_at, source_identifier, telemetry, error_message, completed_at",
+        )
+        .eq("organization_id", organizationId)
+        .order("requested_at", { ascending: false })
+        .limit(12)
+        .returns<IntegrationSyncRun[]>()
+    : { data: [] };
+
   const { data: auditLogs } = canViewAuditLogs
     ? await supabase
         .from("audit_logs")
@@ -241,6 +277,8 @@ export default async function DashboardPage() {
 
       {canManageCompliance ? <ComplianceControlPanel controls={controls ?? []} overdueCount={overdueCount} /> : null}
       {canManageCompliance ? <SecurityPolicyPanel policies={securityPolicies ?? []} /> : null}
+      {canManageCompliance ? <DataClassificationPanel records={classifications ?? []} /> : null}
+      {canManageCompliance ? <EhrIntegrationPanel integrations={integrations ?? []} syncRuns={integrationSyncRuns ?? []} /> : null}
       {canManageCompliance ? <BaaPanel records={baas ?? []} /> : null}
       {canManageCompliance ? <BackupRecordsPanel records={backups ?? []} /> : null}
       {canManageCompliance ? <RiskRegisterPanel risks={risks ?? []} /> : null}
