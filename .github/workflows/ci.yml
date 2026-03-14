@@ -41,78 +41,19 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
-  e2e-invite:
-    name: Invite Acceptance E2E
+  e2e-matrix:
+    name: E2E (${{ matrix.suite }})
     needs: quality
     runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      E2E_ORG_SLUG: ${{ secrets.E2E_ORG_SLUG }}
-      E2E_ORG_NAME: ${{ secrets.E2E_ORG_NAME }}
-      E2E_RESET_USER: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.6.5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright (Chromium)
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Check E2E secrets
-        id: e2e-secrets
-        shell: bash
-        run: |
-          missing=0
-          required_keys=(
-            NEXT_PUBLIC_SUPABASE_URL
-            NEXT_PUBLIC_SUPABASE_ANON_KEY
-            SUPABASE_SERVICE_ROLE_KEY
-            E2E_USER_EMAIL
-            E2E_USER_PASSWORD
-          )
-
-          for key in "${required_keys[@]}"; do
-            if [ -z "${!key}" ]; then
-              echo "Missing secret/env: $key"
-              missing=1
-            fi
-          done
-
-          if [ "$missing" -eq 0 ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Skip note when secrets missing
-        if: steps.e2e-secrets.outputs.ready != 'true'
-        run: echo "Skipping invite E2E because required secrets are not configured."
-
-      - name: Run invite acceptance E2E
-        if: steps.e2e-secrets.outputs.ready == 'true'
-        run: pnpm test:e2e:invite
-
-  e2e-backup:
-    name: Backup Records E2E
-    needs: quality
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - invite
+          - risk
+          - baa
+          - training
+          - backup
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
@@ -172,8 +113,16 @@ jobs:
 
       - name: Skip note when secrets missing
         if: steps.e2e-secrets.outputs.ready != 'true'
-        run: echo "Skipping backup E2E because required secrets are not configured."
+        run: echo "Skipping E2E matrix run (${{ matrix.suite }}) because required secrets are not configured."
 
-      - name: Run backup records E2E
+      - name: Run E2E suite
         if: steps.e2e-secrets.outputs.ready == 'true'
-        run: pnpm test:e2e:backup
+        run: pnpm test:e2e:${{ matrix.suite }}
+
+      - name: E2E suite summary
+        if: always()
+        shell: bash
+        run: |
+          echo "### E2E Suite Result" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Suite: \`${{ matrix.suite }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: \`${{ job.status }}\`" >> "$GITHUB_STEP_SUMMARY"

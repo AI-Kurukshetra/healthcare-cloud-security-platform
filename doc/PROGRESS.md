@@ -25,6 +25,9 @@
 [2026-03-14 15:14] codex - Hardened BAA feature with cross-field date validation (`renewal_date >= signed_at`) and added BAA E2E audit-log assertions for `baa.created` and `baa.status_updated`.
 [2026-03-14 15:54] codex - Implemented security policy management with `security_policies` migration, policy actions/validation, and a new dashboard Security Policies panel.
 [2026-03-14 16:11] codex - Added backup timestamp cross-field validation (`nextScheduledAt >= lastSuccessAt`) and backup E2E coverage with audit-log assertions plus run/cleanup scripts.
+[2026-03-14 16:50] codex - Implemented initial EHR integration path via `ehr_integrations` schema, integration actions/validation, and a new dashboard EHR Integrations panel.
+[2026-03-14 16:55] codex - Added `/api/integrations/ehr/sync` secure endpoint with integration-token auth, in-memory rate-limit guard, payload validation, and integration sync audit events.
 [2026-03-14 16:20] codex - Completed backup/recovery tracking end-to-end with `backup_records` schema/RLS, dashboard create+status workflows, and backup CSV export/reporting support.
 [2026-03-14 16:24] codex - Synced project docs for security policy + backup schema/features and removed duplicate backup Playwright spec (`tests/e2e/backup.spec.ts`).
 [2026-03-14 16:28] codex - Added secret-gated backup E2E execution to GitHub Actions CI (`Backup Records E2E`) using `pnpm test:e2e:backup` after quality checks.
+[2026-03-14 17:05] codex - Hardened CI E2E coverage with a fail-fast-disabled matrix job running invite/risk/baa/training/backup suites and writing per-suite pass/fail summaries.

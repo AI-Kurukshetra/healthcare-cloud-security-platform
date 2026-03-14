@@ -50,3 +50,12 @@
 - Added backup E2E automation scripts `scripts/e2e/run-backup-e2e.mjs` and `scripts/e2e/cleanup-backup.mjs`.
 - Removed redundant backup E2E file `tests/e2e/backup.spec.ts` and kept `tests/e2e/backup-records.spec.ts` as the single canonical backup test.
 - Extended `.github/workflows/ci.yml` with a secret-gated `Backup Records E2E` job that runs `pnpm test:e2e:backup` after quality checks.
+- Added migration `20260314163500_ehr_integrations.sql` with `ehr_provider`, `integration_status`, and `integration_mode` enums plus `ehr_integrations` table, indexes, update trigger, and privileged-role RLS policies.
+- Added integration validation module (`lib/validations/integrations.ts`) and tests for integration create/status payloads.
+- Added integration server actions (`app/actions/integrations.ts`) for create/upsert and status updates with audit events (`integration.created`, `integration.status_updated`).
+- Added dashboard EHR integration panel (`components/dashboard/ehr-integration-panel.tsx`) and dashboard data wiring to manage provider connections and sync posture.
+- Added secure integration API endpoint `POST /api/integrations/ehr/sync` with `x-integration-token` auth, request validation, organization/provider checks, and `integration.sync_requested` audit logging.
+- Added in-memory rate limiting utility (`lib/api/rate-limit.ts`) used by integration sync API as a stub for future distributed backends.
+- Added unit tests for integration sync payload validation and API rate-limit behavior.
+- Extended env scaffolding with `INTEGRATION_SYNC_TOKEN` and `INTEGRATION_SYNC_RATE_LIMIT_PER_MINUTE`.
+- Refactored CI E2E into a secret-gated `e2e-matrix` workflow job that runs `invite`, `risk`, `baa`, `training`, and `backup` suites with `fail-fast: false` and per-suite step-summary status reporting.

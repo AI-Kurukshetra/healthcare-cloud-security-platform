@@ -24,3 +24,6 @@
 - [x] 2026-03-14 16:20 Add backup and recovery tracking module (schema + actions + dashboard panel + reports export + focused E2E)
 - [x] 2026-03-14 16:11 Strengthen backup quality gates (timestamp consistency validation + backup E2E audit assertions)
 - [x] 2026-03-14 16:28 Add secret-gated backup E2E job to GitHub Actions CI workflow
+- [x] 2026-03-14 16:50 Add first EHR integration path (schema + actions + dashboard panel + validations)
+- [x] 2026-03-14 16:55 Add secure EHR sync API endpoint with token auth, rate-limiting stub, and request validation
+- [x] 2026-03-14 17:05 Harden CI by running full secret-gated E2E suite matrix (invite/risk/baa/training/backup) with per-suite status summaries
