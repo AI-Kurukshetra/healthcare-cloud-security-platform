@@ -1,7 +1,7 @@
 # Schema
 
 ## Status
-Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_auth_rbac_foundation.sql`, `supabase/migrations/20260314124500_compliance_incidents.sql`, `supabase/migrations/20260314131500_risk_assessments.sql`, `supabase/migrations/20260314145504_training_records.sql`, `supabase/migrations/20260314154500_business_associate_agreements.sql`, `supabase/migrations/20260314151704_security_policies.sql`, and `supabase/migrations/20260314161000_backup_records.sql`.
+Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_auth_rbac_foundation.sql`, `supabase/migrations/20260314124500_compliance_incidents.sql`, `supabase/migrations/20260314131500_risk_assessments.sql`, `supabase/migrations/20260314145504_training_records.sql`, `supabase/migrations/20260314154500_business_associate_agreements.sql`, `supabase/migrations/20260314151704_security_policies.sql`, `supabase/migrations/20260314161000_backup_records.sql`, `supabase/migrations/20260314163500_ehr_integrations.sql`, `supabase/migrations/20260314170005_data_classifications.sql`, and `supabase/migrations/20260314171500_integration_sync_runs.sql`.
 
 ## Current Tables
 - `organizations`
@@ -28,6 +28,12 @@ Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_
   Organization security policy records with policy type, effective/review dates, owner membership, and lifecycle status.
 - `backup_records`
   Backup and recovery tracking records with system scope, schedule markers, retention, notes, and lifecycle status.
+- `ehr_integrations`
+  Initial EHR integration connector metadata with provider, environment mode, sync status, cadence, and last sync timestamp.
+- `data_classifications`
+  Data sensitivity registry for organizational assets with PHI/PII markers, encryption requirements, retention, and classification level.
+- `integration_sync_runs`
+  EHR integration monitoring telemetry for accepted sync requests, trigger/source metadata, and run lifecycle status.
 
 ## Enums
 - `app_role`
@@ -52,6 +58,18 @@ Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_
   `draft`, `under_review`, `active`, `retired`
 - `backup_record_status`
   `scheduled`, `running`, `successful`, `failed`, `paused`
+- `ehr_provider`
+  `athenahealth`, `epic`, `cerner`, `other`
+- `integration_status`
+  `not_connected`, `connected`, `syncing`, `error`, `paused`
+- `integration_mode`
+  `sandbox`, `production`
+- `data_classification_level`
+  `public`, `internal`, `confidential`, `phi_restricted`
+- `integration_sync_run_status`
+  `accepted`, `processing`, `succeeded`, `failed`
+- `integration_sync_trigger`
+  `manual`, `scheduled`, `retry`
 
 ## Security Model
 - RLS is enabled on all persisted application tables.
@@ -60,6 +78,9 @@ Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_
 - Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage BAA records.
 - Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage security policy records.
 - Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage backup records.
+- Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage EHR integration records.
+- Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage data classification records.
+- Privileged organization roles (`org_admin`, `compliance_manager`) can read and manage integration sync run telemetry.
 - Standard users can read only training records assigned to their own user account.
 - Standard users can read their own profile and active membership only.
 - The app uses service-role backed server actions for privileged writes and still checks application permissions before each mutation.
@@ -83,4 +104,7 @@ Initial Supabase schema has been modeled in `supabase/migrations/20260314110833_
 - Organization/status and renewal-date indexes for BAA records.
 - Organization/status and review-date indexes for security policy records.
 - Organization/status and next-scheduled indexes for backup records.
+- Organization/status and provider indexes for EHR integrations.
+- Organization/level and PHI/encryption indexes for data classifications.
+- Organization/requested-at, organization/status, and integration/requested-at indexes for integration sync runs.
 - Audit log index on `(organization_id, created_at desc)` for dashboard activity queries.

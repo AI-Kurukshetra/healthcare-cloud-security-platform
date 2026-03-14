@@ -27,7 +27,13 @@
 [2026-03-14 16:11] codex - Added backup timestamp cross-field validation (`nextScheduledAt >= lastSuccessAt`) and backup E2E coverage with audit-log assertions plus run/cleanup scripts.
 [2026-03-14 16:50] codex - Implemented initial EHR integration path via `ehr_integrations` schema, integration actions/validation, and a new dashboard EHR Integrations panel.
 [2026-03-14 16:55] codex - Added `/api/integrations/ehr/sync` secure endpoint with integration-token auth, in-memory rate-limit guard, payload validation, and integration sync audit events.
+[2026-03-14 16:58] codex - Documented EHR sync API setup and usage in README, including required env vars and a ready-to-run curl example.
+[2026-03-14 17:03] codex - Implemented data classification baseline workflow with `data_classifications` schema, classification actions/validation, and a new dashboard Data Classification panel.
 [2026-03-14 16:20] codex - Completed backup/recovery tracking end-to-end with `backup_records` schema/RLS, dashboard create+status workflows, and backup CSV export/reporting support.
 [2026-03-14 16:24] codex - Synced project docs for security policy + backup schema/features and removed duplicate backup Playwright spec (`tests/e2e/backup.spec.ts`).
 [2026-03-14 16:28] codex - Added secret-gated backup E2E execution to GitHub Actions CI (`Backup Records E2E`) using `pnpm test:e2e:backup` after quality checks.
 [2026-03-14 17:05] codex - Hardened CI E2E coverage with a fail-fast-disabled matrix job running invite/risk/baa/training/backup suites and writing per-suite pass/fail summaries.
+[2026-03-14 17:15] codex - Added EHR sync monitoring telemetry with `integration_sync_runs` schema/RLS, persisted API sync-run records, and dashboard visibility of recent sync requests and status KPIs.
+[2026-03-14 17:36] codex - Fixed broken password-reset recovery path by adding `/auth/confirm` session exchange, `/update-password` form/action, and update-password validation tests.
+[2026-03-14 17:50] codex - Unblocked pending invitation resend/revoke for compliance managers by granting `invite_users` permission and updating permission test coverage.
+[2026-03-14 18:04] codex - Fixed role-save failures by allowing compliance managers to manage roles and by adding explicit lookup/update error handling for membership role updates.
