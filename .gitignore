@@ -1,0 +1,12 @@
+.next
+.turbo
+coverage
+node_modules
+playwright-report
+test-results
+pnpm-lock.yaml
+.env.local
+.env*.local
+!.env.example
+
+.vercel

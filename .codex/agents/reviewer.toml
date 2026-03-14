@@ -1,0 +1,5 @@
+model = "codex-mini"
+reasoning_effort = "low"
+
+[sandbox]
+mode = "read-only"

@@ -1,0 +1,52 @@
+# Changelog
+
+## 2026-03-14
+- Initialized project documentation and task tracking files for the new repository.
+- Added a greenfield Next.js 15 App Router scaffold with strict TypeScript, Tailwind v3, Supabase SSR helpers, middleware, validation, and testing setup.
+- Added auth and dashboard route groups, a React Query provider, shadcn/ui configuration, and baseline Vitest and Playwright test files.
+- Installed dependencies and verified `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build`.
+- Replaced the placeholder PRD with a detailed healthcare cloud security product definition derived from `Health care.pdf`.
+- Added Supabase RBAC, invitation, audit logging, compliance control, and incident report schema migrations.
+- Replaced dashboard placeholders with live compliance, incident response, and recent audit activity panels backed by server actions.
+- Verified auth flow wiring against populated `.env.local` Supabase variables and revalidated lint/typecheck/test passes.
+- Executed Playwright E2E smoke test successfully in Chromium.
+- Added a risk register feature slice with Supabase schema/RLS for `risk_assessments`, dashboard CRUD flows, and audit events for risk create/status updates.
+- Added Playwright coverage for risk-register create/update flow with environment-gated auth credentials and role/MFA prerequisite checks.
+- Fixed `20260314110833_auth_rbac_foundation.sql` function ordering to ensure first-time remote migration execution succeeds.
+- Linked the configured Supabase project and pushed all current migrations (`auth_rbac_foundation`, `compliance_incidents`, `risk_assessments`).
+- Added deterministic E2E helpers under `scripts/e2e/` for risk test seeding and cleanup, plus `pnpm test:e2e:risk` orchestration.
+- Implemented strict MFA-included risk E2E by completing TOTP enrollment/verification in Playwright and stabilizing assertions.
+- Extended risk E2E with staff-role authorization denial coverage and direct Supabase audit-log assertions for `risk.created` and `risk.status_updated`.
+- Added login redirect-target support for invite acceptance (`/login?redirectTo=...`) so invited users return to `/accept-invite` after sign-in.
+- Hardened `acceptInvite` action with explicit membership/invitation write error handling and a new `membership.activated` audit event.
+- Added invitation lifecycle management actions for org admins: resend pending invite and revoke pending invite, including dashboard controls and audit events (`membership.invite_resent`, `membership.invite_revoked`).
+- Added `.github/workflows/ci.yml` to run lint, typecheck, unit tests, and secret-gated invite-acceptance E2E in GitHub Actions.
+- Added BAA tracking end-to-end: Supabase schema/RLS for `business_associate_agreements`, dashboard create/status-update workflows, report export support, and focused BAA E2E automation with seed/cleanup scripts.
+- Added a dedicated protected reports page at `/dashboard/reports` with optional date-range filters and download links.
+- Added CSV export API routes at `/api/reports/[report]` for `compliance`, `incidents`, `risks`, and `audit`, with strict `view_reports` authorization.
+- Added `report.exported` audit logging for every successful export with report type, date-range metadata, and row count.
+- Added reusable CSV serialization utility (`lib/reports/csv.ts`) with unit test coverage.
+- Added report export history UI on `/dashboard/reports` that lists recent `report.exported` events with actor, report type, exported rows, and effective date range.
+- Added report export-history pagination and filtering on `/dashboard/reports` (search by actor name/email and filter by report type) with URL query-param persistence.
+- Added migration `20260314145504_training_records.sql` introducing `training_record_status` enum and `training_records` table with due dates, assignees, completion metadata, indexes, update trigger, and RLS policies.
+- Added training validation module (`lib/validations/training.ts`) with unit coverage for create/status-update payloads.
+- Added training server actions (`app/actions/training.ts`) for creating assignments, updating status, and marking completion with authorization checks and audit events (`training.record_created`, `training.status_updated`, `training.completed`).
+- Added dashboard training records UI (`components/dashboard/training-records-panel.tsx`) with KPI cards, assignment form, and per-record status/complete controls wired to the new training server actions.
+- Updated dashboard data loading to query `training_records` and render the training panel for privileged users (and assignees with existing records).
+- Added Playwright coverage for training records in `tests/e2e/training-records.spec.ts`, including assign -> update -> complete workflow and audit-event assertions.
+- Added training E2E automation scripts: `scripts/e2e/run-training-e2e.mjs` and `scripts/e2e/cleanup-training.mjs`, plus package script `test:e2e:training`.
+- Tightened BAA validation logic so `renewalDate` cannot be earlier than `signedAt` (`lib/validations/baa.ts`) and added a matching unit test.
+- Extended `tests/e2e/baa.spec.ts` with Supabase-backed audit assertions to verify `baa.created` and `baa.status_updated` events are persisted.
+- Added migration `20260314151704_security_policies.sql` introducing `security_policy_status` enum and `security_policies` table with review-date indexing, update trigger, and privileged-role RLS policies.
+- Added policy validation module (`lib/validations/policies.ts`) and tests for create/status payload rules, including effective/review date consistency checks.
+- Added policy server actions (`app/actions/policies.ts`) for policy creation and status updates with audit events (`policy.created`, `policy.status_updated`).
+- Added dashboard security policy UI (`components/dashboard/security-policy-panel.tsx`) and data wiring in dashboard page to manage policy records.
+- Added migration `20260314161000_backup_records.sql` introducing `backup_record_status` enum and `backup_records` table with scheduling, retention, index coverage, update trigger, and privileged-role RLS policies.
+- Added backup validation module (`lib/validations/backup.ts`) and server actions (`app/actions/backup.ts`) for creating records and updating status with audit events (`backup.record_created`, `backup.status_updated`).
+- Added dashboard backup records UI (`components/dashboard/backup-records-panel.tsx`) and dashboard data wiring to create, list, and update backup records.
+- Extended reports to support backup exports (`/api/reports/backup`) and added backup report option/count on the reports page.
+- Tightened backup validation logic so `nextScheduledAt` cannot be earlier than `lastSuccessAt` (`lib/validations/backup.ts`) and added matching unit coverage.
+- Added backup E2E coverage in `tests/e2e/backup-records.spec.ts` with audit assertions for `backup.record_created` and `backup.status_updated`.
+- Added backup E2E automation scripts `scripts/e2e/run-backup-e2e.mjs` and `scripts/e2e/cleanup-backup.mjs`.
+- Removed redundant backup E2E file `tests/e2e/backup.spec.ts` and kept `tests/e2e/backup-records.spec.ts` as the single canonical backup test.
+- Extended `.github/workflows/ci.yml` with a secret-gated `Backup Records E2E` job that runs `pnpm test:e2e:backup` after quality checks.

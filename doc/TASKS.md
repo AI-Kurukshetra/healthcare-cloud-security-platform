@@ -1,0 +1,26 @@
+# Tasks
+
+- [x] 2026-03-14 10:40 Create `/doc` tracking files and initialize repository state
+- [x] 2026-03-14 10:48 Define MVP product requirements in `doc/PRD.md`
+- [x] 2026-03-14 10:36 Set up project scaffold for Next.js 15 + TypeScript + Tailwind + Supabase + testing
+- [x] 2026-03-14 10:36 Install dependencies and verify `pnpm lint`, `pnpm typecheck`, and `pnpm test`
+- [x] 2026-03-14 12:14 Connect auth flows to the configured `.env.local` Supabase project
+- [x] 2026-03-14 12:45 Model the initial schema for organizations, roles, audit logs, compliance controls, and incidents
+- [x] 2026-03-14 12:14 Run Playwright E2E after local Supabase and browser setup
+- [x] 2026-03-14 12:45 Add first domain feature based on finalized PRD
+- [x] 2026-03-14 12:26 Add risk register workflow (schema + dashboard CRUD) from PRD risk-assessment domain
+- [x] 2026-03-14 14:18 Complete invite acceptance continuity (redirect carry-over + membership activation audit)
+- [x] 2026-03-14 14:19 Add pending-invite lifecycle actions (resend/revoke) to team access management
+- [x] 2026-03-14 15:20 Add BAA tracking workflow (schema + dashboard CRUD + report export + focused E2E)
+- [x] 2026-03-14 14:43 Implement reporting module with protected reports page and CSV export endpoints
+- [x] 2026-03-14 14:47 Add report export history table to reports page from audit logs
+- [x] 2026-03-14 14:53 Add export-history pagination and actor/report-type search filters on reports page
+- [x] 2026-03-14 14:55 Add `training_records` schema migration with enum, indexes, trigger, and RLS policies
+- [x] 2026-03-14 15:00 Add training validation schemas/tests and server actions for assignment, status updates, and completion
+- [x] 2026-03-14 15:05 Add dashboard training records panel wired to create/update/complete server actions
+- [x] 2026-03-14 15:08 Add training E2E coverage and run/cleanup scripts with audit-event assertions
+- [x] 2026-03-14 15:14 Strengthen BAA quality gates (date consistency validation + audit assertions in BAA E2E)
+- [x] 2026-03-14 15:54 Add organization security-policy management module (schema + actions + dashboard panel + validations)
+- [x] 2026-03-14 16:20 Add backup and recovery tracking module (schema + actions + dashboard panel + reports export + focused E2E)
+- [x] 2026-03-14 16:11 Strengthen backup quality gates (timestamp consistency validation + backup E2E audit assertions)
+- [x] 2026-03-14 16:28 Add secret-gated backup E2E job to GitHub Actions CI workflow
